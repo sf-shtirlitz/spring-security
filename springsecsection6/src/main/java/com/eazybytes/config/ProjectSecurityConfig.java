@@ -33,9 +33,11 @@ public class    ProjectSecurityConfig {
          *  2) The Session & JSessionID will not be created by default. Inorder to create a session after initial login, we need to configure
          *      sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)) like shown below.
          */
-        http.securityContext().requireExplicitSave(false)
+        http.securityContext().requireExplicitSave(false)//this says we are not saving credentials inside the security context
                 .and()
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))//these lines
+                // tell spring to always create a jsessionid; without these lines we have to share the credentials every
+                // time with every request
                 .cors().configurationSource(new CorsConfigurationSource() {//this and the block below configures the cors access policy
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
