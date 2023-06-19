@@ -25,8 +25,7 @@ public class    ProjectSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
-        requestHandler.setCsrfRequestAttributeName("_csrf"); //this is the default value anyway, so we don't really need
-        // these two lines
+        requestHandler.setCsrfRequestAttributeName("_csrf"); //this is the default value anyway
         /**
          *  From Spring Security 6, below actions will not happen by default,
          *  1) The Authentication details will not be saved automatically into SecurityContextHolder. To change this behaviour either we need to save
@@ -56,10 +55,10 @@ public class    ProjectSecurityConfig {
          *  every time after the Spring Security in built filter BasicAuthenticationFilter like shown below. More
          *  details about Filters, are discussed inside the Section 8 of the course.
          */
-        }).and().csrf().ignoringRequestMatchers("/register")//we specify endpoints for which there
+        }).and().csrf((csrf)->csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/register")//we specify endpoints for which there
                 // is no need for csrf protection enabled, since these endpoints do not modify the info in DB
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)//this line means that the
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)//this line means that the
                 //filter is called after basic authentication is complete and CSRF-TOKEN is available in the request, so
                 // it needs to be transferred to the response
                 .authorizeHttpRequests()
